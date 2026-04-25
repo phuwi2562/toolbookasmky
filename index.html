@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>คู่มือ อสม. — การเพิ่มและแก้ไขข้อมูลผู้ป่วยเบาหวาน</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #1a8754;
+    --green-light: #e8f5ee;
+    --green-soft: #d1ecdb;
+    --blue: #0d6efd;
+    --warn: #fd7e14;
+    --warn-light: #fff3cd;
+    --danger: #dc3545;
+    --gray: #495057;
+    --gray-light: #f8f9fa;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Sarabun', 'Tahoma', sans-serif;
+    color: #212529;
+    line-height: 1.65;
+    background: #f0f3f6;
+    margin: 0; padding: 0;
+  }
+  .sheet {
+    background: #fff;
+    width: 210mm;
+    min-height: 297mm;
+    margin: 12px auto;
+    padding: 18mm 18mm 14mm;
+    box-shadow: 0 4px 18px rgba(0,0,0,.08);
+    page-break-after: always;
+    position: relative;
+  }
+  .sheet:last-child { page-break-after: auto; }
+
+  /* Cover */
+  .cover {
+    background: linear-gradient(135deg, var(--green) 0%, var(--blue) 100%);
+    color: #fff;
+    padding: 22mm 18mm;
+  }
+  .cover .icon-circle {
+    width: 110px; height: 110px; margin: 0 auto 18px;
+    border-radius: 50%; background: rgba(255,255,255,0.22);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 64px; border: 3px solid rgba(255,255,255,.5);
+  }
+  .cover h1 { font-size: 32pt; margin: 0; text-align: center; font-weight: 700; }
+  .cover h2 { font-size: 20pt; margin: 10px 0 0; text-align: center; font-weight: 400; opacity: .95; }
+  .cover .subtitle { text-align: center; margin-top: 22px; font-size: 14pt; opacity: .9; }
+  .cover .footer-band {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,.18); padding: 14px 18mm;
+    color: #fff; text-align: center; font-size: 11pt;
+  }
+  .cover .audience-tag {
+    display: inline-block; margin-top: 28px;
+    padding: 8px 22px; background: #fff; color: var(--green);
+    border-radius: 30px; font-weight: 700; font-size: 14pt;
+  }
+
+  h1.section { color: var(--green); font-size: 22pt; margin: 0 0 10px; padding-bottom: 8px; border-bottom: 3px double var(--green); }
+  h2.sub { color: var(--green); font-size: 16pt; margin: 22px 0 8px; }
+  h3 { color: var(--gray); font-size: 13pt; margin: 14px 0 6px; }
+  p { margin: 6px 0; font-size: 12pt; }
+
+  .lead {
+    background: var(--green-light);
+    border-left: 5px solid var(--green);
+    padding: 12px 16px; border-radius: 6px; margin: 12px 0;
+    font-size: 12pt;
+  }
+  .warn-box {
+    background: var(--warn-light);
+    border-left: 5px solid var(--warn);
+    padding: 12px 16px; border-radius: 6px; margin: 12px 0;
+    font-size: 12pt;
+  }
+  .danger-box {
+    background: #f8d7da;
+    border-left: 5px solid var(--danger);
+    padding: 12px 16px; border-radius: 6px; margin: 12px 0;
+    font-size: 12pt;
+  }
+  .tip-box {
+    background: #cfe2ff;
+    border-left: 5px solid var(--blue);
+    padding: 12px 16px; border-radius: 6px; margin: 12px 0;
+    font-size: 12pt;
+  }
+
+  ol.steps { padding-left: 0; counter-reset: step; list-style: none; }
+  ol.steps > li {
+    counter-increment: step;
+    position: relative;
+    margin: 14px 0 14px 0;
+    padding: 12px 14px 12px 60px;
+    background: #fff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 12pt;
+  }
+  ol.steps > li::before {
+    content: counter(step);
+    position: absolute; left: 14px; top: 50%;
+    transform: translateY(-50%);
+    width: 36px; height: 36px;
+    background: var(--green); color: #fff;
+    border-radius: 50%; font-weight: 700; font-size: 14pt;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 6px rgba(26,135,84,.3);
+  }
+  ol.steps > li strong { color: var(--green); }
+
+  .screen-mock {
+    background: #f1f3f5;
+    border: 2px solid #adb5bd;
+    border-radius: 12px;
+    padding: 14px;
+    margin: 12px 0;
+    font-family: 'Sarabun', sans-serif;
+    font-size: 11pt;
+  }
+  .screen-mock .mock-header {
+    background: linear-gradient(135deg, var(--green), var(--blue));
+    color: #fff; padding: 8px 12px;
+    border-radius: 8px; margin: -6px -6px 8px;
+    font-weight: 600; font-size: 11pt;
+  }
+  .screen-mock .field {
+    background: #fff; border: 1.5px solid #ced4da;
+    padding: 6px 10px; border-radius: 6px; margin: 4px 0;
+    font-size: 11pt; color: #6c757d;
+  }
+  .screen-mock .btn-mock {
+    display: inline-block; padding: 6px 16px;
+    background: var(--green); color: #fff;
+    border-radius: 6px; font-weight: 600; margin: 4px 0;
+  }
+  .screen-mock .btn-outline {
+    display: inline-block; padding: 6px 16px;
+    background: #fff; color: var(--green);
+    border: 1.5px solid var(--green);
+    border-radius: 6px; font-weight: 600; margin: 4px 0;
+  }
+  .badge-pending {
+    display: inline-block; padding: 3px 10px; border-radius: 12px;
+    background: #ffc107; color: #212529; font-weight: 700; font-size: 10pt;
+  }
+  .badge-approved {
+    display: inline-block; padding: 3px 10px; border-radius: 12px;
+    background: var(--green); color: #fff; font-weight: 700; font-size: 10pt;
+  }
+  .badge-rejected {
+    display: inline-block; padding: 3px 10px; border-radius: 12px;
+    background: var(--danger); color: #fff; font-weight: 700; font-size: 10pt;
+  }
+  .arrow-down {
+    text-align: center; color: var(--green); font-size: 24pt;
+    margin: 4px 0;
+  }
+
+  table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 11pt; }
+  table th, table td { border: 1px solid #ced4da; padding: 7px 10px; text-align: left; }
+  table th { background: var(--green-light); color: var(--green); font-weight: 700; }
+  table tr:nth-child(even) { background: #fafafa; }
+
+  .faq dt {
+    color: var(--green); font-weight: 700; font-size: 12pt;
+    margin-top: 14px; padding-left: 22px; position: relative;
+  }
+  .faq dt::before {
+    content: 'Q'; position: absolute; left: 0; top: 1px;
+    background: var(--green); color: #fff;
+    width: 18px; height: 18px; border-radius: 50%;
+    text-align: center; line-height: 18px; font-size: 11pt; font-weight: 700;
+  }
+  .faq dd { margin: 4px 0 4px 22px; padding-left: 22px; position: relative; font-size: 12pt; }
+  .faq dd::before {
+    content: 'A'; position: absolute; left: 0; top: 1px;
+    background: var(--blue); color: #fff;
+    width: 18px; height: 18px; border-radius: 50%;
+    text-align: center; line-height: 18px; font-size: 11pt; font-weight: 700;
+  }
+
+  .quick-card {
+    background: linear-gradient(135deg, #fff 0%, var(--green-light) 100%);
+    border: 2px dashed var(--green);
+    border-radius: 14px;
+    padding: 16px 20px;
+    margin: 14px 0;
+  }
+  .quick-card h3 { color: var(--green); margin-top: 0; font-size: 15pt; }
+
+  .icon { font-size: 18pt; vertical-align: middle; }
+
+  .toc { font-size: 12pt; }
+  .toc ol { padding-left: 22px; }
+  .toc li { margin: 6px 0; }
+  .toc a { color: var(--green); text-decoration: none; font-weight: 600; }
+  .toc a::after { content: ''; }
+
+  .page-footer {
+    position: absolute; bottom: 8mm; left: 18mm; right: 18mm;
+    border-top: 1px solid #ced4da; padding-top: 6px;
+    color: #6c757d; font-size: 9pt;
+    display: flex; justify-content: space-between;
+  }
+
+  .role-row { display: flex; gap: 8px; margin: 6px 0; align-items: center; flex-wrap: wrap; }
+  .role-pill { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 10pt; font-weight: 700; }
+  .role-osm { background: #d4edda; color: #155724; }
+  .role-staff { background: #cfe2ff; color: #084298; }
+  .role-admin { background: #f8d7da; color: #721c24; }
+
+  /* Print */
+  @page { size: A4; margin: 0; }
+  @media print {
+    body { background: #fff; }
+    .sheet { margin: 0; box-shadow: none; }
+    .no-print { display: none !important; }
+  }
+
+  .print-hint {
+    background: var(--blue); color: #fff;
+    padding: 10px 16px; text-align: center; font-size: 11pt;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .print-hint button {
+    background: #fff; color: var(--blue); border: 0;
+    padding: 4px 14px; border-radius: 6px; font-weight: 700;
+    cursor: pointer; margin-left: 12px; font-size: 11pt;
+  }
+</style>
+</head>
+<body>
+
+<div class="print-hint no-print">
+  📖 คู่มือนี้เปิดอ่านบนหน้าจอได้ — กดปุ่ม <strong>พิมพ์</strong> เพื่อพิมพ์ลงกระดาษ A4 หรือบันทึกเป็น PDF
+  <button onclick="window.print()">🖨 พิมพ์ / Save as PDF</button>
+</div>
+
+<!-- ============ COVER ============ -->
+<div class="sheet cover">
+  <div class="icon-circle">❤️</div>
+  <h1>คู่มือ อสม.</h1>
+  <h2>การเพิ่มและแก้ไขข้อมูลผู้ป่วยเบาหวาน</h2>
+  <div class="subtitle">
+    ระบบบริหารจัดการโรคเบาหวาน<br>
+    รพ.สต.บ้านคำใหญ่ · พชต.คำใหญ่
+  </div>
+  <div style="text-align:center;">
+    <span class="audience-tag">📘 ฉบับสำหรับ อสม.</span>
+  </div>
+  <div class="footer-band">
+    เอกสารนี้จัดทำเพื่อใช้ภายในเครือข่าย รพ.สต.บ้านคำใหญ่ — ปรับปรุงล่าสุด เมษายน 2569
+  </div>
+</div>
+
+<!-- ============ PAGE 2 — ภาพรวม + สารบัญ ============ -->
+<div class="sheet">
+  <h1 class="section">ก่อนเริ่มต้น</h1>
+
+  <div class="lead">
+    <strong>คู่มือนี้สอนอะไร?</strong><br>
+    สอน อสม. <em>เพิ่มผู้ป่วยใหม่</em> และ <em>แก้ไขข้อมูลทั่วไปของผู้ป่วย</em> ในหมู่บ้านของท่าน
+    เพื่อช่วยให้ข้อมูลผู้ป่วยเบาหวานในตำบลคำใหญ่เป็นปัจจุบันและถูกต้อง
+  </div>
+
+  <h2 class="sub">📋 สิ่งที่ อสม. ทำได้ในระบบนี้</h2>
+  <table>
+    <tr><th style="width:55%">การทำงาน</th><th>สิทธิ์ของ อสม.</th></tr>
+    <tr><td>ดูรายชื่อผู้ป่วยในหมู่บ้านของตน</td><td>✅ ทำได้</td></tr>
+    <tr><td><strong>เพิ่มผู้ป่วยใหม่</strong> ในหมู่บ้านของตน</td><td>✅ ทำได้ (รอ admin อนุมัติ)</td></tr>
+    <tr><td><strong>แก้ไขข้อมูลทั่วไป</strong> ของผู้ป่วยในหมู่บ้านของตน</td><td>✅ ทำได้ (มีผลทันที)</td></tr>
+    <tr><td>บันทึกการตรวจประจำปี (เท้า/ตา/ฟัน)</td><td>✅ ทำได้</td></tr>
+    <tr><td>ดูรายงาน KPI ของหมู่บ้าน</td><td>✅ ทำได้ (เฉพาะหมู่บ้านตน)</td></tr>
+    <tr><td>ดู/แก้ไขผู้ป่วยจากหมู่บ้านอื่น</td><td>❌ ไม่ได้</td></tr>
+    <tr><td>ลบผู้ป่วย / อนุมัติผู้ป่วยที่รอ</td><td>❌ ต้องเป็น admin/staff เท่านั้น</td></tr>
+  </table>
+
+  <h2 class="sub">🔐 บทบาทผู้ใช้ในระบบ</h2>
+  <div class="role-row"><span class="role-pill role-admin">admin</span> ผู้ดูแลระบบ — เห็นและแก้ไขทุกอย่าง อนุมัติผู้ป่วยรออนุมัติ</div>
+  <div class="role-row"><span class="role-pill role-staff">staff</span> เจ้าหน้าที่ รพ.สต. — เห็นทุกหมู่ แก้ไขได้ทุกหมู่</div>
+  <div class="role-row"><span class="role-pill role-osm">osm</span> อสม. — เห็นและแก้ไขเฉพาะหมู่บ้านของตน <strong>(คือผู้ใช้คู่มือเล่มนี้)</strong></div>
+  <div class="role-row"><span class="role-pill" style="background:#e2e3e5;color:#41464b;">viewer</span> ผู้บริหาร/กรรมการ พชต. — ดูได้แต่ Dashboard เท่านั้น</div>
+
+  <h2 class="sub">📑 สารบัญ</h2>
+  <div class="toc">
+    <ol>
+      <li>การเข้าสู่ระบบ (Login)</li>
+      <li>ทำความรู้จักหน้า "ผู้ป่วย"</li>
+      <li><strong>การเพิ่มผู้ป่วยใหม่</strong> (พร้อม flow รออนุมัติ)</li>
+      <li><strong>การแก้ไขข้อมูลผู้ป่วย</strong> ในหมู่บ้านของท่าน</li>
+      <li>การติดตามสถานะ "รออนุมัติ"</li>
+      <li>ข้อควรระวัง 5 ข้อ</li>
+      <li>คำถามที่พบบ่อย (FAQ)</li>
+      <li>การ์ดข้อมูลด่วน (พิมพ์เก็บไว้ติดที่ทำงาน)</li>
+    </ol>
+  </div>
+
+  <div class="page-footer">
+    <span>คู่มือ อสม. — เพิ่ม/แก้ไขผู้ป่วย</span>
+    <span>หน้า 2</span>
+  </div>
+</div>
+
+<!-- ============ PAGE 3 — Login ============ -->
+<div class="sheet">
+  <h1 class="section">1. การเข้าสู่ระบบ (Login)</h1>
+
+  <p>ก่อนเข้าใช้งาน ท่านต้องมีบัญชีผู้ใช้และผ่านการอนุมัติจาก admin แล้ว</p>
+
+  <ol class="steps">
+    <li>เปิดเว็บแอป — ลิงก์จะถูกแจกให้โดยเจ้าหน้าที่ รพ.สต.</li>
+    <li>กรอก <strong>ชื่อผู้ใช้ หรือ เบอร์โทรศัพท์</strong> ของท่าน</li>
+    <li>กรอก <strong>รหัสผ่าน</strong> — กดไอคอน 👁 เพื่อดูรหัสผ่านที่พิมพ์</li>
+    <li>กดปุ่ม <strong>เข้าสู่ระบบ</strong></li>
+  </ol>
+
+  <div class="screen-mock">
+    <div class="mock-header">❤️ ระบบบริหารจัดการโรคเบาหวาน</div>
+    <div class="field">👤 ชื่อผู้ใช้ หรือ เบอร์โทรศัพท์</div>
+    <div class="field">🔒 รหัสผ่าน &nbsp;&nbsp;&nbsp; 👁</div>
+    <div class="btn-mock">↪ เข้าสู่ระบบ</div>
+    <div style="text-align:center;margin-top:6px;">หรือ</div>
+    <div class="btn-outline">+ สมัครใช้งานใหม่</div>
+  </div>
+
+  <h2 class="sub">🆕 ยังไม่มีบัญชี? สมัครใหม่</h2>
+  <ol class="steps">
+    <li>กดปุ่ม <strong>สมัครใช้งานใหม่</strong> ในหน้า Login</li>
+    <li>กรอกข้อมูลให้ครบ: ชื่อ-สกุล, ชื่อผู้ใช้, รหัสผ่าน, เบอร์โทร, <strong>เลือกบทบาท "อสม."</strong>, เลือกหมู่บ้านที่รับผิดชอบ</li>
+    <li>กดยืนยัน — บัญชีจะอยู่ในสถานะ <span class="badge-pending">รออนุมัติ</span></li>
+    <li>แจ้ง admin/หัวหน้า รพ.สต. ให้อนุมัติ</li>
+    <li>เมื่ออนุมัติแล้วท่านจึงเข้าระบบได้</li>
+  </ol>
+
+  <div class="warn-box">
+    <strong>⚠ ข้อควรระวัง:</strong> เลือก <strong>หมู่บ้าน</strong> ให้ถูกต้องตอนสมัคร เพราะระบบจะให้สิทธิ์ดู/แก้ไขเฉพาะหมู่ที่ท่านเลือกเท่านั้น
+    หากเลือกผิด ต้องแจ้ง admin แก้ไขให้
+  </div>
+
+  <div class="page-footer">
+    <span>คู่มือ อสม. — เพิ่ม/แก้ไขผู้ป่วย</span>
+    <span>หน้า 3</span>
+  </div>
+</div>
+
+<!-- ============ PAGE 4 — Patient list overview ============ -->
+<div class="sheet">
+  <h1 class="section">2. หน้า "ผู้ป่วย" คืออะไร?</h1>
+
+  <p>หลังเข้าสู่ระบบสำเร็จ กดเมนู <strong>"ผู้ป่วย"</strong> (ไอคอน 👥) ที่แถบเมนูบน หรือบาร์ล่างในมือถือ</p>
+
+  <p>ท่านจะเห็น <strong>เฉพาะรายชื่อผู้ป่วยในหมู่บ้านของท่านเท่านั้น</strong>
+  — แต่ละการ์ดจะแสดง: ชื่อ-สกุล, HN, วันตรวจล่าสุด, ค่า HbA1c และ BP ล่าสุด</p>
+
+  <h2 class="sub">🟢 🟡 🔴 ความหมายของสีแถบ HbA1c</h2>
+  <table>
+    <tr><th>สี</th><th>ค่า HbA1c</th><th>หมายความว่า</th></tr>
+    <tr><td>🟢 เขียว</td><td>&lt; 7%</td><td>คุมได้ดี</td></tr>
+    <tr><td>🟡 เหลือง</td><td>7 – 8%</td><td>คุมพอใช้ — ควรติดตาม</td></tr>
+    <tr><td>🔴 แดง</td><td>&gt; 8%</td><td>คุมไม่ได้ — ส่งต่อ จนท. รพ.สต.</td></tr>
+  </table>
+
+  <h2 class="sub">🔍 ค้นหา / กรอง</h2>
+  <ul style="font-size:12pt;">
+    <li><strong>ช่องค้นหา</strong> — พิมพ์ชื่อ, HN, หรือเลขบัตรประชาชน</li>
+    <li><strong>เรียงลำดับ</strong> — เลือกได้ตามชื่อ, HN, HbA1c ล่าสุด, วันตรวจล่าสุด</li>
+    <li><strong>ตัวกรองด่วน</strong> — มี 4 ปุ่ม: ทั้งหมด · ยังไม่ตรวจปีนี้ · HbA1c &gt; 8 · BP ไม่คุม</li>
+  </ul>
+
+  <div class="tip-box">
+    <strong>💡 เคล็ดลับ:</strong> ใช้ตัวกรอง <strong>"ยังไม่ตรวจปีนี้"</strong> เพื่อหารายชื่อผู้ป่วยที่ต้องไปตามให้มาตรวจ
+    — เป็นเครื่องมือวางแผนงานที่ดีมากสำหรับ อสม.
+  </div>
+
+  <div class="page-footer">
+    <span>คู่มือ อสม. — เพิ่ม/แก้ไขผู้ป่วย</span>
+    <span>หน้า 4</span>
+  </div>
+</div>
+
+<!-- ============ PAGE 5 — Add new patient ============ -->
+<div class="sheet">
+  <h1 class="section">3. การเพิ่มผู้ป่วยใหม่</h1>
+
+  <div class="warn-box">
+    <strong>⚠ สำคัญ:</strong> ผู้ป่วยที่ อสม. เพิ่มเข้ามาใหม่จะมีสถานะ <span class="badge-pending">รออนุมัติ</span>
+    <strong>ต้องรอ admin หรือ จนท. รพ.สต. กดอนุมัติก่อน</strong> ผู้ป่วยจึงจะปรากฏในระบบและพร้อมให้บันทึกการเยี่ยม/Lab ได้
+  </div>
+
+  <h2 class="sub">เริ่มเพิ่มผู้ป่วยใหม่</h2>
+  <ol class="steps">
+    <li>กดปุ่ม <strong>"+ เพิ่มผู้ป่วย"</strong> ที่มุมขวาบนของหน้ารายชื่อผู้ป่วย<br>
+        <small>(บนมือถือ — กดไอคอน <strong>+ เพิ่ม</strong> ในแถบล่าง)</small></li>
+
+    <li>หัวฟอร์มจะแสดงป้าย <span class="badge-pending">⏳ ต้องรอ admin อนุมัติ</span> เพื่อให้รู้ว่าข้อมูลนี้จะส่งไปรอการอนุมัติ</li>
+
+    <li>กรอกข้อมูลส่วนตัวให้ครบ:
+      <ul>
+        <li><strong>เลขบัตรประชาชน</strong> (จำเป็น)</li>
+        <li>ชื่อ-สกุล (จำเป็น), เพศ, วันเกิด (อายุจะคำนวณให้อัตโนมัติ)</li>
+        <li>เบอร์โทรศัพท์, ที่อยู่</li>
+      </ul>
+    </li>
+
+    <li><strong>หมู่บ้าน</strong> — ระบบจะล็อกเป็นหมู่ของท่านและไม่ให้แก้ไข
+        (ถ้าหมู่บ้านไม่ตรง ต้องแจ้ง admin แก้สิทธิ์ให้ก่อน)</li>
+
+    <li>กรอกข้อมูลการวินิจฉัย: ชนิดเบาหวาน (Type 2 DM), วันที่วินิจฉัย, โรคร่วม (ความดัน/ไขมัน/ไต)</li>
+
+    <li>(ทำเลือก) ถ่ายรูปผู้ป่วย — กด "ถ่ายภาพ" จากกล้องมือถือ</li>
+
+    <li>ตรวจทานอีกครั้ง — แล้วกดปุ่ม <strong>บันทึก</strong></li>
+  </ol>
+
+  <div class="arrow-down">⬇</div>
+
+  <div class="screen-mock" style="background:#fff7e0;border-color:var(--warn);">
+    <div style="font-weight:700;color:var(--warn);font-size:13pt;">✅ บันทึกสำเร็จ — รอ Admin อนุมัติ</div>
+    <p style="margin:8px 0;font-size:11pt;">ข้อมูลผู้ป่วยใหม่ถูกบันทึกแล้ว แต่<strong>ต้องรอผู้ดูแลระบบ (admin) อนุมัติก่อน</strong>
+    จึงจะเข้าสู่ระบบและใช้บันทึกการเยี่ยม/Lab ได้</p>
+    <p style="margin:0;font-size:11pt;">คุณสามารถติดตามสถานะได้ในรายการผู้ป่วยของหมู่บ้านท่าน
+    (จะมีป้าย <span class="badge-pending">รออนุมัติ</span>)</p>
+    <div class="btn-mock">รับทราบ</div>
+  </div>
+
+  <div class="page-footer">
+    <span>คู่มือ อสม. — เพิ่ม/แก้ไขผู้ป่วย</span>
+    <span>หน้า 5</span>
+  </div>
+</div>
+
+<!-- ============ PAGE 6 — Edit patient ============ -->
+<div class="sheet">
+  <h1 class="section">4. การแก้ไขข้อมูลผู้ป่วย</h1>
+
+  <div class="lead">
+    การแก้ไขข้อมูลของผู้ป่วยเดิม <strong>ไม่ต้องรอการอนุมัติ</strong> — บันทึกแล้วเปลี่ยนแปลงทันที
+    (เฉพาะผู้ป่วยในหมู่บ้านของท่านเท่านั้น)
+  </div>
+
+  <h2 class="sub">วิธีแก้ไข</h2>
+  <ol class="steps">
+    <li>ในหน้า <strong>ผู้ป่วย</strong> กดที่การ์ดของผู้ป่วยที่ต้องการแก้ไข (จะเข้าหน้ารายละเอียด)</li>
+
+    <li>มุมขวาบนจะมีปุ่ม <strong>"✏ แก้ไข"</strong> — กดปุ่มนี้</li>
+
+    <li>ปรับเปลี่ยนข้อมูลที่ต้องการ เช่น:
+      <ul>
+        <li>เบอร์โทรศัพท์เปลี่ยน</li>
+        <li>ที่อยู่เปลี่ยน</li>
+        <li>HN ที่ รพ.สต. ออกให้ใหม่</li>
+        <li>โรคร่วม (เพิ่ม/ลด HT, DLP, CKD)</li>
+        <li>วันที่วินิจฉัยเบาหวาน (ถ้ารู้แล้ว)</li>
+      </ul>
+    </li>
+
+    <li>กดปุ่ม <strong>บันทึก</strong> — ระบบบันทึกทันที</li>
+  </ol>
+
+  <h2 class="sub">⚠ สิ่งที่ อสม. แก้ไม่ได้</h2>
+  <table>
+    <tr><th style="width:30%">รายการ</th><th>เหตุผล</th></tr>
+    <tr><td>หมู่บ้าน</td><td>ป้องกันการย้ายผู้ป่วยข้ามหมู่บ้านโดยไม่ตั้งใจ — ถ้าย้ายจริงให้แจ้ง จนท. รพ.สต.</td></tr>
+    <tr><td>ผู้ป่วยจากหมู่อื่น</td><td>ดูได้แต่แก้ไม่ได้ ไอคอนแก้ไขจะไม่ปรากฏ</td></tr>
+    <tr><td>ลบผู้ป่วย</td><td>เป็นสิทธิ์ของ admin เท่านั้น — ถ้าผู้ป่วยซ้ำ/ผิด ให้แจ้ง admin</td></tr>
+  </table>
+
+  <h2 class="sub">📅 บันทึกการตรวจประจำปี (เท้า/ตา/ฟัน)</h2>
+  <ol class="steps">
+    <li>เปิดผู้ป่วย → ไปแท็บ <strong>"ตรวจประจำปี"</strong></li>
+    <li>เลือกวันที่ตรวจของแต่ละรายการ (เท้า/ตา/ฟัน)</li>
+    <li>กด <strong>บันทึก</strong> ในแต่ละรายการ</li>
+  </ol>
+
+  <div class="tip-box">
+    <strong>💡 ทำไมต้องบันทึก:</strong> ระบบจะใช้วันที่นี้คำนวณ KPI <strong>"อัตราตรวจเท้า/ตา/ฟัน ประจำปี"</strong>
+    ซึ่งเป็นตัวชี้วัด สปสช. ที่ รพ.สต. ต้องรายงานทุกปี
+  </div>
+
+  <div class="page-footer">
+    <span>คู่มือ อสม. — เพิ่ม/แก้ไขผู้ป่วย</span>
+    <span>หน้า 6</span>
+  </div>
+</div>
+
+<!-- ============ PAGE 7 — Track approval status + cautions ============ -->
+<div class="sheet">
+  <h1 class="section">5. การติดตามสถานะ "รออนุมัติ"</h1>
+
+  <p>หลังจากท่านเพิ่มผู้ป่วยใหม่แล้ว ผู้ป่วยจะปรากฏในรายการของท่าน
+  <strong>พร้อมป้ายสีเหลือง</strong> ที่บ่งบอกสถานะ</p>
+
+  <table>
+    <tr><th>ป้าย</th><th>หมายความว่า</th><th>ทำอะไรได้</th></tr>
+    <tr>
+      <td><span class="badge-pending">รออนุมัติ</span></td>
+      <td>เพิ่งบันทึกใหม่ — รอ admin/staff อนุมัติ</td>
+      <td>ติดต่อ admin ให้พิจารณา</td>
+    </tr>
+    <tr>
+      <td><span class="badge-approved">approved</span> (ไม่มีป้าย)</td>
+      <td>อนุมัติแล้ว — เข้าระบบเรียบร้อย</td>
+      <td>ใช้งานได้ปกติ</td>
+    </tr>
+    <tr>
+      <td><span class="badge-rejected">rejected</span> (ผู้ป่วยจะหายไป)</td>
+      <td>admin ปฏิเสธ — ผู้ป่วยถูกซ่อนจากระบบ</td>
+      <td>สอบถาม admin ว่าทำไมถึงปฏิเสธ</td>
+    </tr>
+  </table>
+
+  <div class="lead">
+    <strong>📞 ใครคือ admin?</strong><br>
+    คือ ผู้รับผิดชอบดูแลระบบ — มักเป็นเจ้าหน้าที่ รพ.สต. ที่หัวหน้ามอบหมาย
+    หากไม่แน่ใจให้สอบถามผู้อำนวยการ รพ.สต. หรือเจ้าหน้าที่ฝ่ายข้อมูล
+  </div>
+
+  <h1 class="section" style="margin-top:30px;">6. ข้อควรระวัง 5 ข้อ</h1>
+
+  <ol class="steps">
+    <li><strong>ตรวจเลขบัตรประชาชนให้ถูกต้อง</strong> — เพราะระบบใช้เลข ปชช. ตรวจซ้ำ ถ้าใส่ผิด อาจสร้างผู้ป่วยซ้ำได้</li>
+    <li><strong>ใส่ HN</strong> ถ้ามี — HN เป็นเลขทะเบียนของ รพ.สต./โรงพยาบาล จะช่วยเชื่อมข้อมูลกับ Lab</li>
+    <li><strong>ตรวจทานก่อนกดบันทึก</strong> — โดยเฉพาะ ชื่อ-สกุล วันเกิด เพราะแก้ทีหลังก็ยุ่ง</li>
+    <li><strong>ไม่เปลี่ยนรหัสผ่านให้คนอื่น</strong> — แต่ละบัญชีเป็นของบุคคล ห้ามแชร์</li>
+    <li><strong>ออกจากระบบทุกครั้ง</strong> หลังใช้เสร็จ (เมนูชื่อ → ออกจากระบบ) เพื่อความปลอดภัย</li>
+  </ol>
+
+  <div class="page-footer">
+    <span>คู่มือ อสม. — เพิ่ม/แก้ไขผู้ป่วย</span>
+    <span>หน้า 7</span>
+  </div>
+</div>
+
+<!-- ============ PAGE 8 — FAQ ============ -->
+<div class="sheet">
+  <h1 class="section">7. คำถามที่พบบ่อย (FAQ)</h1>
+
+  <dl class="faq">
+    <dt>ทำไมเพิ่มผู้ป่วยแล้วยังไม่เห็นในระบบ?</dt>
+    <dd>เพราะอยู่ในสถานะ <span class="badge-pending">รออนุมัติ</span> — ท่านจะเห็นในรายการของหมู่บ้านท่านพร้อมป้ายสีเหลือง
+        แต่จะยังบันทึกการเยี่ยม/Lab ไม่ได้จนกว่า admin จะกดอนุมัติ</dd>
+
+    <dt>ทำไมแก้ "หมู่บ้าน" ไม่ได้ตอนเพิ่ม/แก้ไขผู้ป่วย?</dt>
+    <dd>ระบบล็อกหมู่บ้านเป็นของท่านอัตโนมัติ เพื่อป้องกันการเพิ่ม/แก้ไขผู้ป่วยข้ามหมู่บ้านโดยไม่ตั้งใจ
+        ถ้าผู้ป่วยย้ายจริง — แจ้งเจ้าหน้าที่ รพ.สต. ให้แก้ไขแทน</dd>
+
+    <dt>ใส่ผู้ป่วยซ้ำ จะรู้ได้อย่างไร?</dt>
+    <dd>ระบบจะตรวจ HN และเลขบัตรประชาชนซ้ำให้ตอนบันทึก ถ้าซ้ำจะแจ้งเตือน
+        แต่ถ้าจะให้แน่ใจ ลองค้นหาด้วยชื่อหรือเลข ปชช. ก่อนเพิ่มใหม่</dd>
+
+    <dt>เพิ่มผู้ป่วยจากหมู่บ้านอื่นได้ไหม?</dt>
+    <dd>ไม่ได้ — อสม. เพิ่มได้เฉพาะหมู่บ้านของตนเอง ถ้าผู้ป่วยอยู่หมู่อื่น
+        ให้บอก อสม. หมู่นั้น หรือ จนท. รพ.สต. แทน</dd>
+
+    <dt>ผู้ป่วยที่ admin ปฏิเสธไป — ขอแก้แล้วส่งใหม่ได้ไหม?</dt>
+    <dd>ผู้ป่วยที่ปฏิเสธจะถูกซ่อน ให้เพิ่มเป็นรายการใหม่อีกครั้ง พร้อมแก้ไขข้อมูลตามที่ admin ระบุเหตุผล</dd>
+
+    <dt>ลืมรหัสผ่านทำอย่างไร?</dt>
+    <dd>ติดต่อ admin ให้รีเซ็ตรหัสผ่านให้ — admin มีฟังก์ชัน "Reset Password" สำหรับผู้ใช้</dd>
+
+    <dt>ใช้บนมือถือได้ไหม?</dt>
+    <dd>ได้ทั้งหมด — ระบบออกแบบให้ใช้กับมือถือสะดวก ทั้ง Android และ iPhone
+        ถ่ายรูปผู้ป่วยจากกล้องในเครื่องได้เลย</dd>
+
+    <dt>ค่า HbA1c, BP กรอกได้ไหม?</dt>
+    <dd><strong>ไม่ได้</strong> — การกรอกผล Lab และวัดสัญญาณชีพเป็นหน้าที่ของ จนท. รพ.สต.
+        อสม. แค่ติดตามให้คนไข้ไปตรวจตามนัด</dd>
+
+    <dt>ลบผู้ป่วยที่เพิ่มผิดได้ไหม?</dt>
+    <dd>อสม. ลบไม่ได้ — แจ้ง admin ให้ "ปฏิเสธ" หรือ "ปิดการใช้งาน" ผู้ป่วยรายนั้นแทน</dd>
+
+    <dt>ดูรายงาน KPI ของหมู่บ้านได้ไหม?</dt>
+    <dd>ได้ — เมนู "รายงาน KPI" ระบบจะกรองให้เห็นเฉพาะหมู่บ้านของท่านอัตโนมัติ</dd>
+  </dl>
+
+  <div class="page-footer">
+    <span>คู่มือ อสม. — เพิ่ม/แก้ไขผู้ป่วย</span>
+    <span>หน้า 8</span>
+  </div>
+</div>
+
+<!-- ============ PAGE 9 — Quick reference card ============ -->
+<div class="sheet">
+  <h1 class="section">8. การ์ดข้อมูลด่วน</h1>
+  <p style="font-size:11pt;color:#6c757d;">พิมพ์หน้านี้แยก ตัด แล้วติดที่หน้าโต๊ะทำงาน หรือใส่ในกระเป๋าไว้ใช้</p>
+
+  <div class="quick-card">
+    <h3>🔐 ขั้นตอนเข้าระบบ</h3>
+    <ol style="font-size:12pt;">
+      <li>เปิดเว็บแอป</li>
+      <li>กรอก <strong>ชื่อผู้ใช้/เบอร์โทร</strong> + <strong>รหัสผ่าน</strong></li>
+      <li>กด <strong>เข้าสู่ระบบ</strong></li>
+    </ol>
+  </div>
+
+  <div class="quick-card">
+    <h3>➕ เพิ่มผู้ป่วยใหม่ — 3 ขั้นตอน</h3>
+    <ol style="font-size:12pt;">
+      <li>เมนู <strong>ผู้ป่วย</strong> → กด <strong>+ เพิ่มผู้ป่วย</strong></li>
+      <li>กรอกข้อมูลให้ครบ → กด <strong>บันทึก</strong></li>
+      <li>รอ <strong>admin อนุมัติ</strong> (มีป้าย <span class="badge-pending">รออนุมัติ</span>)</li>
+    </ol>
+  </div>
+
+  <div class="quick-card">
+    <h3>✏ แก้ไขข้อมูลผู้ป่วย — 3 ขั้นตอน</h3>
+    <ol style="font-size:12pt;">
+      <li>เมนู <strong>ผู้ป่วย</strong> → กดที่ผู้ป่วยที่ต้องการ</li>
+      <li>กดปุ่ม <strong>✏ แก้ไข</strong> มุมขวาบน</li>
+      <li>แก้ไข → กด <strong>บันทึก</strong> (มีผลทันที)</li>
+    </ol>
+  </div>
+
+  <div class="quick-card">
+    <h3>📅 บันทึกตรวจประจำปี — 3 ขั้นตอน</h3>
+    <ol style="font-size:12pt;">
+      <li>เปิดผู้ป่วย → แท็บ <strong>ตรวจประจำปี</strong></li>
+      <li>เลือกวันที่ตรวจ (เท้า/ตา/ฟัน)</li>
+      <li>กด <strong>บันทึก</strong> ในแต่ละรายการ</li>
+    </ol>
+  </div>
+
+  <div class="quick-card" style="background:linear-gradient(135deg,#fff 0%,#fff3cd 100%);border-color:var(--warn);">
+    <h3 style="color:var(--warn);">⚠ ข้อจำกัดของบทบาท อสม.</h3>
+    <ul style="font-size:12pt;">
+      <li>เห็นและแก้ไขเฉพาะหมู่บ้านของตนเองเท่านั้น</li>
+      <li>ผู้ป่วยใหม่ต้องรอ admin อนุมัติก่อน</li>
+      <li>เปลี่ยนหมู่บ้านของผู้ป่วยไม่ได้</li>
+      <li>ลบผู้ป่วยไม่ได้ (แจ้ง admin)</li>
+      <li>กรอกผล Lab/สัญญาณชีพไม่ได้ (เป็นงาน จนท. รพ.สต.)</li>
+    </ul>
+  </div>
+
+  <div class="lead" style="margin-top:18px;text-align:center;">
+    <strong>📞 ติดต่อ admin</strong><br>
+    เจ้าหน้าที่ฝ่ายข้อมูล รพ.สต.บ้านคำใหญ่<br>
+    <em>(ระบุเบอร์โทร/ไลน์ติดต่อภายในที่นี่)</em>
+  </div>
+
+  <div style="text-align:center;margin-top:30px;color:#6c757d;font-size:10pt;">
+    คู่มือนี้จัดทำเพื่อใช้กับ ระบบบริหารจัดการโรคเบาหวาน รพ.สต.บ้านคำใหญ่ · พชต.คำใหญ่<br>
+    Copyright © 2569 — เวอร์ชันคู่มือ 1.0
+  </div>
+
+  <div class="page-footer">
+    <span>คู่มือ อสม. — เพิ่ม/แก้ไขผู้ป่วย</span>
+    <span>หน้า 9 · จบ</span>
+  </div>
+</div>
+
+</body>
+</html>
